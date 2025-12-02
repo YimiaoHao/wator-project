@@ -1,3 +1,7 @@
+// Package main is the entry point for the Wa-Tor ecological simulation.
+//
+// It handles command-line argument parsing, initializes the simulation world,
+// and controls the main execution loop for both sequential and parallel modes.
 package main
 
 import (
@@ -10,6 +14,12 @@ import (
 	"time"
 )
 
+// parsePositionalArgsIntoFlags parses the 7 required positional arguments into configuration flags.
+//
+// It returns true if 7 positional arguments were provided and parsed successfully; false otherwise.
+//
+// The expected argument order is:
+// [NumShark] [NumFish] [FishBreed] [SharkBreed] [Starve] [GridSize] [Threads]
 func parsePositionalArgsIntoFlags(size, fish, sharks, steps, workers *int) bool {
 	args := flag.Args()
 	if len(args) != 7 {
@@ -31,6 +41,14 @@ func parsePositionalArgsIntoFlags(size, fish, sharks, steps, workers *int) bool 
 	return true
 }
 
+// main is the application entry point.
+//
+// It performs the following steps:
+//  1. Defines and parses command-line flags.
+//  2. Overrides flags with positional arguments if provided.
+//  3. Validates input parameters to prevent invalid simulation states.
+//  4. Initializes the World grid and seeds random agents.
+//  5. Launches the simulation loop (GUI mode using Ebiten or CLI mode).
 func main() {
 	// Define Flag parameters
 	size := flag.Int("size", 150, "grid size (N x N)")
