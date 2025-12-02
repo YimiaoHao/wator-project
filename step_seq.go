@@ -2,25 +2,6 @@ package main
 
 import "math/rand"
 
-/**
- * @file step_seq.go
- * @brief Implementation of the sequential Wa-Tor simulation step.
- *
- * This file contains the logic for updating the simulation world using a single
- * thread. It serves as the baseline for correctness and performance comparison
- * against the parallel implementation.
- */
-
-/**
- * @brief Updates the world state sequentially (Single-threaded).
- *
- * Processes the grid one cell at a time. The rules dictate that Sharks move first,
- * potentially eating Fish. Then Fish move. This implementation uses double-buffering
- * to store the state of the next chronon without affecting the current read state.
- *
- * @param w Pointer to the current World state.
- * @return Pointer to the updated World state.
- */
 func StepSeq(w *World) *World {
 	n := w.Size
 	cur := w.Grid
@@ -31,7 +12,7 @@ func StepSeq(w *World) *World {
 		next[i] = make([]Cell, n)
 	}
 
-	// ---------- 1) Process Sharks First ----------
+	//  Process Sharks First 
 	for y := 0; y < n; y++ {
 		for x := 0; x < n; x++ {
 			cell := cur[y][x]
@@ -118,7 +99,7 @@ func StepSeq(w *World) *World {
 		}
 	}
 
-	// ---------- 2) Process Fish Next ----------
+	//  Process Fish Next
 	for y := 0; y < n; y++ {
 		for x := 0; x < n; x++ {
 			cell := cur[y][x]
