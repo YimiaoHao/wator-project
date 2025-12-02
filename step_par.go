@@ -5,25 +5,6 @@ import (
 	"sync"
 )
 
-/**
- * @file step_par.go
- * @brief Implementation of the parallel Wa-Tor simulation step.
- *
- * This file contains the logic for updating the simulation world using multiple
- * threads (goroutines). It uses spatial decomposition to divide the grid into
- * horizontal strips, assigning each strip to a worker.
- */
-
-/**
- * @brief Splits the grid rows into segments for parallel processing.
- *
- * Divides the total number of rows (nRows) as evenly as possible among
- * the specified number of workers.
- *
- * @param nRows Total number of rows in the grid.
- * @param workers Number of worker threads available.
- * @return A slice of [start, end) row indices for each worker.
- */
 func splitRows(nRows, workers int) [][2]int {
 	if workers < 1 {
 		workers = 1
@@ -49,18 +30,6 @@ func splitRows(nRows, workers int) [][2]int {
 	return segs
 }
 
-/**
- * @brief Updates the world state in parallel using spatial decomposition.
- *
- * Divides the grid into horizontal strips and assigns each to a worker thread.
- * It uses a double-buffering approach (curr -> next) and row-level locks
- * to prevent race conditions when agents move between segments.
- *
- * @param curr Pointer to the current World state.
- * @param workers Number of goroutines to use.
- * @param stepSeed Random seed for this step to ensure determinism across runs.
- * @return Pointer to the new World state.
- */
 func StepPar(curr *World, workers int, stepSeed int64) *World {
 	n := curr.Size
 	next := NewWorld(n)
