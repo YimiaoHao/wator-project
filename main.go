@@ -10,32 +10,6 @@ import (
 	"time"
 )
 
-/**
- * @file main.go
- * @brief Entry point for the Wa-Tor simulation project.
- *
- * This file handles command-line argument parsing (both flags and positional),
- * initializes the simulation world, and controls the main execution loop
- * for both sequential and parallel modes.
- */
-
-/**
- * @brief Parses the 7 required positional arguments into configuration flags.
- *
- * This function exists to support the specific command line interface required
- * by the project specification:
- * [NumShark] [NumFish] [FishBreed] [SharkBreed] [Starve] [GridSize] [Threads]
- *
- * It updates both the flag variables (via pointers) and the global configuration
- * variables defined in world.go.
- *
- * @param size Pointer to the grid size variable.
- * @param fish Pointer to the initial fish count variable.
- * @param sharks Pointer to the initial shark count variable.
- * @param steps Pointer to the total number of simulation steps.
- * @param workers Pointer to the number of threads/goroutines.
- * @return true if 7 positional arguments were provided and parsed; false otherwise.
- */
 func parsePositionalArgsIntoFlags(size, fish, sharks, steps, workers *int) bool {
 	args := flag.Args()
 	if len(args) != 7 {
@@ -57,13 +31,6 @@ func parsePositionalArgsIntoFlags(size, fish, sharks, steps, workers *int) bool 
 	return true
 }
 
-/**
- * @brief The main function of the application.
- *
- * Sets up command line flags, initializes the random seed, performs validaton
- * on input parameters, and starts the simulation.
- * It supports running in GUI mode (using Ebiten) or Console mode (for benchmarking).
- */
 func main() {
 	// Define Flag parameters
 	size := flag.Int("size", 150, "grid size (N x N)")
