@@ -5,19 +5,8 @@ import (
 	"time"
 )
 
-/**
- * @file world.go
- * @brief Defines the core data structures and initialization logic for the Wa-Tor world.
- *
- * This file contains the definitions for the World grid, Cells, and Agent states (Fish/Shark),
- * as well as helper functions for coordinate wrapping (toroidal geometry) and neighbor calculation.
- */
-
 // Types and Constants
 
-/**
- * @brief Enumeration for the type of object occupying a cell.
- */
 type CellType int
 
 const (
@@ -35,44 +24,27 @@ var (
 	SharkEnergyLoss = 1 ///< Energy lost by a shark each chronon.
 )
 
-/**
- * @brief State information specific to a Fish.
- */
 type FishState struct {
 	BreedTimer int ///< Chronons survived since last reproduction.
 }
 
-/**
- * @brief State information specific to a Shark.
- */
 type SharkState struct {
 	BreedTimer int ///< Chronons survived since last reproduction.
 	Energy     int ///< Current energy level. Shark dies if this reaches 0.
 }
 
-/**
- * @brief Represents a single grid unit in the simulation.
- */
 type Cell struct {
 	Type  CellType    ///< The type of the cell (Empty, Fish, or Shark).
 	Fish  *FishState  ///< Pointer to fish state (nil if Type != Fish).
 	Shark *SharkState ///< Pointer to shark state (nil if Type != Shark).
 }
 
-/**
- * @brief Represents the Wa-Tor planet.
- *
- * Contains the grid of cells and the dimensions of the world.
- * The grid is a 2D slice where coordinates are accessed as Grid[y][x].
- */
+
 type World struct {
 	Size int      ///< The width and height of the square grid.
 	Grid [][]Cell ///< 2D matrix representing the world state.
 }
 
-/**
- * @brief Represents a 2D coordinate point (X, Y).
- */
 type P struct {
 	X int
 	Y int
@@ -80,15 +52,6 @@ type P struct {
 
 // Initialization Functions
 
-/**
- * @brief Creates a new Wa-Tor world grid.
- *
- * Initializes a 2D grid of Cells with the specified size. Memory is allocated
- * for the rows and columns.
- *
- * @param size The dimension of the grid (N x N).
- * @return A pointer to the initialized World struct.
- */
 func NewWorld(size int) *World {
 	g := make([][]Cell, size)
 	for i := range g {
@@ -97,24 +60,9 @@ func NewWorld(size int) *World {
 	return &World{Size: size, Grid: g}
 }
 
-/**
- * @brief Initializes the global random number generator.
- *
- * Runs automatically when the package is loaded. Sets the seed to current time
- * to ensure different results on each run (unless overridden in main).
- */
+
 func init() { rand.Seed(time.Now().UnixNano()) }
 
-/**
- * @brief Randomly populates the world with Fish and Sharks.
- *
- * Uses a Fisher-Yates shuffle on a list of all possible coordinates to ensure
- * agents are placed randomly without collision (two agents on the same spot).
- *
- * @param w Pointer to the World to populate.
- * @param numFish Number of fish to place.
- * @param numShark Number of sharks to place.
- */
 func SeedRandom(w *World, numFish, numShark int) {
 	total := w.Size * w.Size
 	idx := make([]int, total)
@@ -154,17 +102,6 @@ func SeedRandom(w *World, numFish, numShark int) {
 
 // Helper Functions (Geometry & Stats)
 
-/**
- * @brief Wraps a coordinate around the grid boundaries (Toroidal geometry).
- *
- * Implements the "donut" shape logic. If an index goes off the left edge (-1),
- * it wraps to the right edge (n-1). If it goes off the right edge (n),
- * it wraps to 0.
- *
- * @param i The coordinate to wrap.
- * @param n The size of the dimension.
- * @return The wrapped coordinate index.
- */
 func wrap(i, n int) int {
 	if i < 0 {
 		return n - 1
@@ -175,16 +112,6 @@ func wrap(i, n int) int {
 	return i
 }
 
-/**
- * @brief Calculates the 4 von Neumann neighbors (North, East, South, West).
- *
- * Handles boundary wrapping automatically using the wrap() function.
- *
- * @param x The X coordinate of the center cell.
- * @param y The Y coordinate of the center cell.
- * @param n The size of the grid.
- * @return An array of 4 Point structs representing the neighbors.
- */
 func neigh4(x, y, n int) [4]P {
 	return [4]P{
 		{x, wrap(y-1, n)}, // North
@@ -194,15 +121,7 @@ func neigh4(x, y, n int) [4]P {
 	}
 }
 
-/**
- * @brief Counts the total number of Fish and Sharks in the world.
- *
- * Iterates through the entire grid to perform a census.
- *
- * @param w Pointer to the World to count.
- * @return fish The total number of fish.
- * @return sharks The total number of sharks.
- */
+
 func Count(w *World) (fish, sharks int) {
 	for y := 0; y < w.Size; y++ {
 		for x := 0; x < w.Size; x++ {
@@ -217,14 +136,7 @@ func Count(w *World) (fish, sharks int) {
 	return
 }
 
-/**
- * @brief Prints a text representation of the world to the console.
- *
- * Useful for debugging small grids.
- *
- * @param w Pointer to the World to print.
- * @param max The maximum grid size to print (to avoid flooding the console).
- */
+
 func PrintWorld(w *World, max int) {
 	n := w.Size
 	if n > max {
